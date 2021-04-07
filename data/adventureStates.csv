@@ -1,0 +1,11 @@
+ID,StateName,ClassName,PNGFilename,CollisionFilename
+0,Start,PNGRoom,assets/Start Screen.png,
+1,Instruction,PNGRoom,assets/Instruction Screen.png,
+2,Farm,PNGRoom,assets/Farm.png,
+3,Factory,PNGRoom,assets/Factory.png,
+4,City,PNGRoom,assets/City.png,
+5,Road,PNGRoom,assets/Road.png,
+6,Kitchen,PNGRoom,assets/Kitchen.png,
+7,Kitchen2,PNGRoom,assets/Kitchen2.png,
+8,Outside,PNGRoom,assets/Outside.png,
+9,Free,PNGRoom,assets/Free.png,
