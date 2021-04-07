@@ -10,7 +10,7 @@ City,,,,,E,Road
 Road,,,,,N,Factory
 Road,,,,,W,City
 Road,,,,,E,Kitchen
-Kitchen,,,,,E,Road
+Kitchen,,,,,W,Road
 Kitchen,,,,,S,Kitchen2
 Kitchen2,,,,,S,Outside
 Kitchen2,,,,,N,Kitchen
