@@ -1,8 +1,9 @@
 CurrentState,KeyTyped,KeyCode,MouseEvent,ClickableName,MapDirection,NextState
 Start,,,mouseReleased,,,Instruction
 Instruction,,,mouseReleased,,,Farm
-Farm,,,,,E,Factory
+Farm,,,,,E,FactoryBlock
 Farm,,,,,S,City
+FactoryBlock,,,,Open,,Factory
 Factory,,,,,W,Farm
 Factory,,,,,S,Road
 City,,,,,N,Farm
@@ -17,3 +18,7 @@ Kitchen2,,,,,N,Kitchen
 Outside,,,,,N,Kitchen2
 Outside,,,,,W,Free
 Free,,,,,E,Outside
+Free,,,,Abuse,,Abuse
+Dead,,,,Restart,,Start
+Abuse,,,,Restart1,,Start
+Dead,,,,Abuse,,Abuse

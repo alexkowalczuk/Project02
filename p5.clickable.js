@@ -198,8 +198,15 @@ class ClickableManager {
 	getClickableArray() {
 		return this.clickableArray;
 	}
+
 	// expects as .csv file with the format as outlined in the readme file
 	setup() {
+		// this could be cleaner...
+		// Make sure we have a 
+		let hasWidth = this.hasColumnData('width');
+		let hasHeight = this.hasColumnData('height');
+		let hasColor = this.hasColumnData('color');
+
 		// For each row, allocate a clickable object
 		for( let i = 0; i < this.allocatorTable.getRowCount(); i++ ) {
 			this.clickableArray[i] = new Clickable();
@@ -214,9 +221,21 @@ class ClickableManager {
 			// especially check the case
 			this.clickableArray[i].id = parseInt(this.allocatorTable.getString(i, 'ID'));
 			this.clickableArray[i].name = this.allocatorTable.getString(i, 'Name');
-			this.clickableArray[i].x = parseInt(this.allocatorTable.getString(i, 'x'));
-			this.clickableArray[i].y = parseInt(this.allocatorTable.getString(i, 'y'));
+			this.clickableArray[i].x = eval(this.allocatorTable.getString(i, 'x'));
+			this.clickableArray[i].y = eval(this.allocatorTable.getString(i, 'y'));
+			if( hasWidth ) {
+				this.clickableArray[i].width = eval(this.allocatorTable.getString(i, 'width'));	
+			}
+			if( hasHeight ) {
+				this.clickableArray[i].height = eval(this.allocatorTable.getString(i, 'height'));
+			}
+			if( hasColor ) {
+				// expects hex value
+				this.clickableArray[i].color = this.allocatorTable.getString(i, 'color');
+			}
+
 			this.clickableArray[i].text = this.allocatorTable.getString(i, 'Text')
+			
 		}
 	
 		return this.clickableArray;
@@ -237,5 +256,17 @@ class ClickableManager {
 		}
 		
 		return this.allocatorTable.getString(rowNum, attStr);
+	}
+
+	//-- Internal --/
+	// Weird way to check to see if the column actually has data or not, but it works...
+	hasColumnData(headerStr) {
+		let arr = this.allocatorTable.getColumn(headerStr);
+		if( this.allocatorTable.getRowCount() === 0 || arr[0] === undefined) {
+			print( "No " + headerStr + " parameter in clickables Layout");
+			return false;
+		}
+
+		return true;
 	}
  }

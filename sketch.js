@@ -1,14 +1,16 @@
 /***********************************************************************************
-  MoodyMaze
-  by Scott Kildall
+  TITLE: Piggy Run
+
+  by ALEX KOWALCZUK
 
   Uses the p5.2DAdventure.js class 
-  
-------------------------------------------------------------------------------------
-	To use:
-	Add this line to the index.html
 
-  <script src="p5.2DAdventure.js"></script>
+  This game is supposed to be friendly for users in any age. That is why there is not much blood.
+  The goal in the game is to save piglet from 'dangerous' places and situations.
+  Simply use arrows on your keyboard and mouse to navigate trough the game. 
+  In the code I used some clickable objects, and draw functions. We can see preloaded functions and variables. 
+  In the code we can see that I used some of NPC’s functions.
+
 ***********************************************************************************/
 
 // adventure manager global  
@@ -24,6 +26,10 @@ var clickables;           // an array of clickable objects
 
 // indexes into the clickable array (constants)
 const playGameIndex = 0;
+const restartGameIndex = 1;
+
+var screamSound = null;
+var numLives = 5;
 
 // Allocate Adventure Manager with states table and interaction tables
 function preload() {
@@ -31,6 +37,8 @@ function preload() {
   adventureManager = new AdventureManager('data/adventureStates.csv', 'data/interactionTable.csv', 'data/clickableLayout.csv');
   piggy_image = loadImage('assets/avatars/piggy 1.png'); 
   piggy_image_2 = loadImage('assets/avatars/piggy 2.png'); 
+
+  atariFont = loadFont('fonts/AtariClassic-Chunky.ttf');
 }
 
 // Setup the adventure manager
@@ -60,6 +68,8 @@ function setup() {
     // This will load the images, go through state and interation tables, etc
   adventureManager.setup();
 
+  adventureManager.setChangedStateCallback(changedState);
+
   // call OUR function to setup additional information about the p5.clickables
   // that are not in the array 
   setupClickables(); 
@@ -79,6 +89,12 @@ function draw() {
       
     // responds to keydowns
     moveSprite();
+
+    fill(255, 0, 0);
+    textFont(atariFont);
+    textSize(20)
+    textAlign(LEFT);
+    text( "Lives: " + numLives, width-350, 50);
 
     // this is a function of p5.js, not of this sketch
     drawSprite(playerSprite);
@@ -104,6 +120,12 @@ function keyPressed() {
 
 function mouseReleased() {
   adventureManager.mouseReleased();
+}
+
+//-------------- CALLBACK FUNCTION FOR WHEN STATE HAS CHANGED -------//
+function changedState(currentStateStr, newStateStr) {
+  print("changed state" + "current state = " + currentStateStr + " new state = " + newStateStr);
+
 }
 
 //-------------- YOUR SPRITE MOVEMENT CODE HERE  ---------------//
@@ -148,19 +170,34 @@ clickableButtonHover = function () {
 // color a light gray if off
 clickableButtonOnOutside = function () {
   // backto our gray color
-  this.color = "#AAAAAA";
+  this.color = "#FF0000";
 }
 
 clickableButtonPressed = function() {
   // these clickables are ones that change your state
   // so they route to the adventure manager to do this
   adventureManager.clickablePressed(this.name); 
+
+    // restart game with max lives
+  if( this.name === "Restart" ) {
+    numLives = 5;
+  }
+
+}
+
+function die() {
+  //screamSound.play();
+  numLives--;
+  if( numLives > 0 )  {
+    adventureManager.changeState("Farm");
+  }
+  else {
+    adventureManager.changeState("Dead");
+  }
 }
 
 
-
 //-------------- SUBCLASSES / YOUR DRAW CODE CAN GO HERE ---------------//
-
 
 // Instructions screen has a backgrounnd image, loaded from the adventureStates table
 // It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
@@ -175,7 +212,7 @@ class InstructionsScreen extends PNGRoom {
     this.textBoxHeight = (height/6)*4; 
 
     // hard-coded, but this could be loaded from a file if we wanted to be more elegant
-    this.instructionsText = "You are navigating through the interior space of your moods. There is no goal to this game, but just a chance to explore various things that might be going on in your head. Use the ARROW keys to navigate your avatar around.";
+    this.instructionsText = "Just make sure piggy will survive....";
   }
 
   // call the PNGRoom superclass's draw function to draw the background image
@@ -194,6 +231,172 @@ class InstructionsScreen extends PNGRoom {
 
     // Draw text in a box
     text(this.instructionsText, width/6, height/6, this.textBoxWidth, this.textBoxHeight );
+  }
+}
+
+
+class CityRoom extends PNGRoom {
+  // preload() gets called once upon startup
+  // We load ONE animation and create 20 NPCs
+  preload() {
+     // load the animation just one time
+    this.NPCAnimation = loadAnimation('assets/NPCs/shoe1.png', 'assets/NPCs/shoe4.png');
+    
+    // this is a type from p5play, so we can do operations on all sprites
+    // at once
+    this.NPCgroup = new Group;
+
+    // change this number for more or less
+    this.numNPCs = 5;
+
+    // is an array of sprites, note we keep this array because
+    // later I will add movement to all of them
+    this.NPCSprites = [];
+
+    // this will place them randomly in the room
+    for( let i = 0; i < this.numNPCs; i++ ) {
+      // random x and random y poisiton for each sprite
+      let randX  = random(100, width-100);
+      let randY = random(100, height-100);
+
+      // create the sprite
+      this.NPCSprites[i] = createSprite( randX, randY, 40, 40);
+    
+      // add the animation to it (important to load the animation just one time)
+      this.NPCSprites[i].addAnimation('regular', this.NPCAnimation );
+
+      // add to the group
+      this.NPCgroup.add(this.NPCSprites[i]);
+    }
+  }
+
+  
+  // pass draw function to superclass, then draw sprites, then check for overlap
+  draw() {
+    // PNG room draw
+    super.draw();
+
+    // draws all the sprites in the group
+    this.NPCgroup.draw();
+
+    // checks for overlap with ANY sprite in the group, if this happens
+    // our die() function gets called
+    playerSprite.overlap(this.NPCgroup, die);
+
+    for( let i = 0; i < this.NPCSprites.length; i++ ) {
+      this.NPCSprites[i].velocity.x = random(-1,1);
+      this.NPCSprites[i].velocity.y = random(-1,1);
+    }
+  }
+}
+
+class OutsideRoom extends PNGRoom {
+  // preload() gets called once upon startup
+  // We load ONE animation and create 20 NPCs
+  preload() {
+     // load the animation just one time
+    this.NPCAnimation = loadAnimation('assets/NPCs/wolf1.png', 'assets/NPCs/wolf4.png');
+    
+    // this is a type from p5play, so we can do operations on all sprites
+    // at once
+    this.NPCgroup = new Group;
+
+    // change this number for more or less
+    this.numNPCs = 4;
+
+    // is an array of sprites, note we keep this array because
+    // later I will add movement to all of them
+    this.NPCSprites = [];
+
+    // this will place them randomly in the room
+    for( let i = 0; i < this.numNPCs; i++ ) {
+      // random x and random y poisiton for each sprite
+      let randX  = random(100, width-100);
+      let randY = random(100, height-100);
+
+      // create the sprite
+      this.NPCSprites[i] = createSprite( randX, randY, 40, 40);
+    
+      // add the animation to it (important to load the animation just one time)
+      this.NPCSprites[i].addAnimation('regular', this.NPCAnimation );
+
+      // add to the group
+      this.NPCgroup.add(this.NPCSprites[i]);
+    }
+  }
+
+  
+  // pass draw function to superclass, then draw sprites, then check for overlap
+  draw() {
+    // PNG room draw
+    super.draw();
+
+    // draws all the sprites in the group
+    this.NPCgroup.draw();
+
+    // checks for overlap with ANY sprite in the group, if this happens
+    // our die() function gets called
+    playerSprite.overlap(this.NPCgroup, die);
+
+    for( let i = 0; i < this.NPCSprites.length; i++ ) {
+      this.NPCSprites[i].velocity.x = random(-1,1);
+      this.NPCSprites[i].velocity.y = random(-1,1);
+    }
+  }
+}
+
+class KitchenRoom extends PNGRoom {
+  // preload() gets called once upon startup
+  // We load ONE animation and create 20 NPCs
+  preload() {
+     // load the animation just one time
+    this.NPCAnimation = loadAnimation('assets/NPCs/knife1.png', 'assets/NPCs/knife4.png');
+    
+    // this is a type from p5play, so we can do operations on all sprites
+    // at once
+    this.NPCgroup = new Group;
+
+    // change this number for more or less
+    this.numNPCs = 10;
+
+    // is an array of sprites, note we keep this array because
+    // later I will add movement to all of them
+    this.NPCSprites = [];
+
+    // this will place them randomly in the room
+    for( let i = 0; i < this.numNPCs; i++ ) {
+      // random x and random y poisiton for each sprite
+      let randX  = random(100, width-100);
+      let randY = random(100, height-100);
+
+      // create the sprite
+      this.NPCSprites[i] = createSprite( randX, randY, 40, 40);
+    
+      // add the animation to it (important to load the animation just one time)
+      this.NPCSprites[i].addAnimation('regular', this.NPCAnimation );
+
+      // add to the group
+      this.NPCgroup.add(this.NPCSprites[i]);
+    }
+  }
+
+  
+  // pass draw function to superclass, then draw sprites, then check for overlap
+  draw() {
+    // PNG room draw
+    super.draw();
+
+    // draws all the sprites in the group
+    this.NPCgroup.draw();
+
+    // checks for overlap with ANY sprite in the group, if this happens
+    // our die() function gets called
+    playerSprite.overlap(this.NPCgroup, die);
+
+    for( let i = 0; i < this.NPCSprites.length; i++ ) {
+      this.NPCSprites[i].velocity.x = random(-1,1);
+      this.NPCSprites[i].velocity.y = random(-1,1);
+    }
   }
 }
 

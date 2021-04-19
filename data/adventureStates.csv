@@ -1,11 +1,14 @@
 ID,StateName,ClassName,PNGFilename,CollisionFilename
 0,Start,PNGRoom,assets/Start Screen.png,
 1,Instruction,PNGRoom,assets/Instruction Screen.png,
-2,Farm,PNGRoom,assets/Farm.png,
-3,Factory,PNGRoom,assets/Factory.png,
-4,City,PNGRoom,assets/City.png,
-5,Road,PNGRoom,assets/Road.png,
-6,Kitchen,PNGRoom,assets/Kitchen.png,
-7,Kitchen2,PNGRoom,assets/Kitchen2.png,
-8,Outside,PNGRoom,assets/Outside.png,
-9,Free,PNGRoom,assets/Free.png,
+2,Farm,PNGRoom,assets/Farm.png,assets/Farm_cl.csv
+3,FactoryBlock,PNGRoom,assets/FactoryBlock.png,
+4,Factory,PNGRoom,assets/Factory.png,assets/Factory_cl.csv
+5,City,CityRoom,assets/City.png,assets/City_cl.csv
+6,Road,PNGRoom,assets/Road.png,assets/Road_cl.csv
+7,Kitchen,KitchenRoom,assets/Kitchen.png,assets/Kitchen_cl.csv
+8,Kitchen2,PNGRoom,assets/Kitchen2.png,assets/Kitchen2_cl.csv
+9,Outside,OutsideRoom,assets/Outside.png,assets/Outside_cl.csv
+10,Free,PNGRoom,assets/Free.png,assets/Free_cl.csv
+11,Dead,PNGRoom,assets/Dead.png,
+12,Abuse,PNGRoom,assets/Abuse.png,
