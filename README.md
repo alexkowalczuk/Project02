@@ -9,7 +9,7 @@
 Project 2 for Interaction Design class at the University of San Francisco. This project relates to Social Juistice (abuse of animals - piglets). Player has to avoid dangerous situations, in each room to make sure that piggy is going to be alive. User have to use arrows on keyboard and mouse for some clickable decision making.
 I made sure it is easly navigateble for the kids as well as adults. 
 
-Prototype (adobe XD): 
+Prototype (adobe XD): https://xd.adobe.com/view/63e5ae0b-ce25-4d9a-9669-0564f5bbd5a3-36b6/?fullscreen
 
 ### Technical Details
 
