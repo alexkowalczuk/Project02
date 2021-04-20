@@ -2,7 +2,7 @@ ID,StateName,ClassName,PNGFilename,CollisionFilename
 0,Start,PNGRoom,assets/Start Screen.png,
 1,Instruction,PNGRoom,assets/Instruction Screen.png,
 2,Farm,PNGRoom,assets/Farm.png,assets/Farm_cl.csv
-3,FactoryBlock,PNGRoom,assets/FactoryBlock.png,
+3,FactoryBlock,PNGRoom,assets/FactoryBlock.png,assets/FactoryBlock_cl.csv
 4,Factory,PNGRoom,assets/Factory.png,assets/Factory_cl.csv
 5,City,CityRoom,assets/City.png,assets/City_cl.csv
 6,Road,PNGRoom,assets/Road.png,assets/Road_cl.csv
