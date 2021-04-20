@@ -28,8 +28,9 @@ var clickables;           // an array of clickable objects
 const playGameIndex = 0;
 const restartGameIndex = 1;
 
-var screamSound = null;
+//var screamSound = null;
 var numLives = 5;
+var atariFont = null;
 
 // Allocate Adventure Manager with states table and interaction tables
 function preload() {
@@ -37,6 +38,8 @@ function preload() {
   adventureManager = new AdventureManager('data/adventureStates.csv', 'data/interactionTable.csv', 'data/clickableLayout.csv');
   piggy_image = loadImage('assets/avatars/piggy 1.png'); 
   piggy_image_2 = loadImage('assets/avatars/piggy 2.png'); 
+
+  //screamSound = loadSound('sounds/pig_scream.wav');
 
   atariFont = loadFont('fonts/AtariClassic-Chunky.ttf');
 }
@@ -49,7 +52,7 @@ function setup() {
   clickables = clickablesManager.setup();
 
   // create a sprite and add the 3 animations
-  playerSprite = createSprite(158, 122, 80, 80);
+  playerSprite = createSprite(600, 400, 80, 80);
 
   // every animation needs a descriptor, since we aren't switching animations, this string value doesn't matter
   piggy_image.resize(158,122); 
